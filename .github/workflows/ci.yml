@@ -28,7 +28,9 @@ jobs:
 
       - name: Run Linter (golangci-lint)
         run: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh  
+
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh 
+          cd ./vote-api 
           ./bin/golangci-lint run ./...
       
       - name: Format the Go code (go fmt)
