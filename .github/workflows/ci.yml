@@ -21,20 +21,33 @@ jobs:
         with:
           go-version: '1.23'  
 
-      - name: Install Dependencies (Go)
+      - name: Build (GO)
         run: |
           cd ./vote-api
-          go mod tidy  
+          go build 
+
+      - name: Run Linter (golangci-lint)
+        run: |
+          cd ./vote-api 
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b ./bin v1.63.4
+          ./bin/golangci-lint run ./...
+      
+      - name: Format the Go code (go fmt)
+        run: |
+          cd ./vote-api
+          go fmt ./...
+
+      - name: Run Unit Tests (Go)
+        run: |
+          cd ./vote-api
+          go test ./...  # Exécuter les tests unitaires pour le backend
 
       - name: Build the Docker image for vote-api
         run: |
           cd ./vote-api
           docker build -t vote-api .  
 
-      - name: Run Unit Tests (Go)
-        run: |
-          cd ./vote-api
-          go test ./...  # Exécuter les tests unitaires pour le backend
+
 
   # Job pour le frontend (`web-client`)
   web-client:
@@ -51,14 +64,34 @@ jobs:
       - name: Install Dependencies (Frontend)
         run: |
           cd ./web-client
-          yarn install  
+          yarn install 
+
+      - name: Run Unit Tests (Vitest)
+        run: |
+          cd ./web-client
+          yarn test
+
+
+      - name: Run Linter
+        run: |
+          cd ./web-client
+          yarn lint
+
+      - name: Check code Formatting
+        run: |
+          cd ./web-client
+          yarn format:check
+
 
       - name: Build the Docker image for web-client
         run: |
           cd ./web-client
           docker build -t web-client . 
 
-      - name: Run Unit Tests (Vitest)
-        run: |
-          cd ./web-client
-          yarn test
+
+
+
+
+
+
+
