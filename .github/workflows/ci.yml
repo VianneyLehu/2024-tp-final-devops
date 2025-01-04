@@ -1,4 +1,4 @@
-ame: CI Pipeline
+name: CI Pipeline
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ on:
 jobs:
   vote-api:
     runs-on: ubuntu-latest
-    working-directory: ./vote-api  
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -23,20 +23,22 @@ jobs:
 
       - name: Install Dependencies (Go)
         run: |
-          go mod tidy  # Mettre à jour les dépendances Go
+          cd ./vote-api
+          go mod tidy  
 
       - name: Build the Docker image for vote-api
         run: |
-          docker build -t vote-api .  # Construire l'image Docker pour le backend
+          cd ./vote-api
+          docker build -t vote-api .  
 
       - name: Run Unit Tests (Go)
         run: |
+          cd ./vote-api
           go test ./...  # Exécuter les tests unitaires pour le backend
 
   # Job pour le frontend (`web-client`)
   web-client:
-    runs-on: ubuntu-latest
-    working-directory: ./web-client  
+    runs-on: ubuntu-latest  
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -48,12 +50,15 @@ jobs:
 
       - name: Install Dependencies (Frontend)
         run: |
-          yarn install  # Installer les dépendances pour le frontend
+          cd ./web-client
+          yarn install  
 
       - name: Build the Docker image for web-client
         run: |
+          cd ./web-client
           docker build -t web-client . 
 
       - name: Run Unit Tests (Vitest)
         run: |
+          cd ./web-client
           yarn test
