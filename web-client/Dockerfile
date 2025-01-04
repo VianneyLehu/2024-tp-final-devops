@@ -14,7 +14,7 @@ RUN yarn build
 
 
 
-FROM node:23-slim
+FROM node:23-alpine
 
 WORKDIR /app
 
@@ -23,6 +23,7 @@ RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 
 COPY --from=build /app /app
 
+RUN apk update && apk add iputils
 
 RUN chown -R appuser:appgroup /app
 
