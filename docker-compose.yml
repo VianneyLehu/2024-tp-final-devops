@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  web-client:
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    environment:
+      - VOTE_API_BASE_URL=http://vote-api:8080
+
+  vote-api:
+    build:
+      context: ./vote-api
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    environment:
+      - PG_URL=postgresql://neondb_owner:${DB_PASSWORD}@ep-shy-mode-a2l6ax5k.eu-central-1.aws.neon.tech/neondb?sslmode=require
+
+networks:
+  app-network:
+    driver: bridge
+
+
+
+  
+
