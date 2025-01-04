@@ -34,6 +34,7 @@ jobs:
       
       - name: Format the Go code (go fmt)
         run: |
+          cd ./vote-api
           go fmt ./...
 
       - name: Run Unit Tests (Go)
