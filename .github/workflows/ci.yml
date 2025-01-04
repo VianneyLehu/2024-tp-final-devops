@@ -69,7 +69,9 @@ jobs:
       - name: Playwright update
         run: |
           cd ./web-client
-          yarn playwright install
+          yarn add @playwright/test@latest
+          yarn playwright install --force
+          yarn playwright install-deps
 
       - name: Run Unit Tests (Vitest)
         run: |
