@@ -69,11 +69,12 @@ jobs:
       - name: Playwright update
         run: |
           cd ./web-client
-          yarn add @playwright/test@latest
+          yarn playwright install
 
       - name: Run Unit Tests (Vitest)
         run: |
           cd ./web-client
+          yarn playwright install
           yarn test
 
 
@@ -86,12 +87,12 @@ jobs:
       - name: Run E2E Tests (FRONT)
         run: |
           cd ./web-client
-          yarn test
+          yarn e2e
 
       - name: Check code Formatting
         run: |
           cd ./web-client
-          yarn test
+          yarn format:check
 
 
       - name: Build the Docker image for web-client
