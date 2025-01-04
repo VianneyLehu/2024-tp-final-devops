@@ -21,20 +21,36 @@ jobs:
         with:
           go-version: '1.23'  
 
-      - name: Install Dependencies (Go)
+      - name: Build (GO)
         run: |
           cd ./vote-api
-          go mod tidy  
+          go build 
+
+      - name: Run Linter (golangci-lint)
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh  
+          golangci-lint./golangci-lint run
+      
+
+      - name: Run golint (golang linter)
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golang/lint/master/misc/vim/golint.vim | sh  
+          golint ./...  
+      - name: Format the Go code (go fmt)
+        run: |
+          go fmt ./...
+
+      - name: Run Unit Tests (Go)
+        run: |
+          cd ./vote-api
+          go test ./...  # Exécuter les tests unitaires pour le backend
 
       - name: Build the Docker image for vote-api
         run: |
           cd ./vote-api
           docker build -t vote-api .  
 
-      - name: Run Unit Tests (Go)
-        run: |
-          cd ./vote-api
-          go test ./...  # Exécuter les tests unitaires pour le backend
+
 
   # Job pour le frontend (`web-client`)
   web-client:
@@ -52,16 +68,41 @@ jobs:
         run: |
           cd ./web-client
           yarn install  
+      
+      - name: Playwright update
+        run: |
+          cd ./web-client
+          yarn add @playwright/test@latest
+
+      - name: Run Unit Tests (Vitest)
+        run: |
+          cd ./web-client
+          yarn test
+
+
+      - name: Run Linter
+        run: |
+          cd ./web-client
+          yarn lint
+
+
+      - name: Run E2E Tests (FRONT)
+        run: |
+          cd ./web-client
+          yarn test
+
+      - name: Check code Formatting
+        run: |
+          cd ./web-client
+          yarn test
+
 
       - name: Build the Docker image for web-client
         run: |
           cd ./web-client
           docker build -t web-client . 
 
-      - name: Run Unit Tests (Vitest)
-        run: |
-          cd ./web-client
-          yarn test
+
 
 
 
