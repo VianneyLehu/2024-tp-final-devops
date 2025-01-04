@@ -64,7 +64,7 @@ jobs:
       - name: Install Dependencies (Frontend)
         run: |
           cd ./web-client
-          yarn install  
+          yarn install 
       
       - name: Playwright update
         run: |
@@ -74,7 +74,6 @@ jobs:
       - name: Run Unit Tests (Vitest)
         run: |
           cd ./web-client
-          yarn playwright install
           yarn test
 
 
