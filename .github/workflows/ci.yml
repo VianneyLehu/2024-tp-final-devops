@@ -21,20 +21,22 @@ jobs:
         with:
           go-version: '1.23'  
 
-      - name: Install Dependencies (Go)
+      - name: Build GO
         run: |
           cd ./vote-api
-          go mod tidy  
+          go build
+
+        - name: Run Unit Tests (Go)
+        run: |
+          cd ./vote-api
+          go test ./...  # Exécuter les tests unitaires pour le backend
 
       - name: Build the Docker image for vote-api
         run: |
           cd ./vote-api
           docker build -t vote-api .  
 
-      - name: Run Unit Tests (Go)
-        run: |
-          cd ./vote-api
-          go test ./...  # Exécuter les tests unitaires pour le backend
+
 
   # Job pour le frontend (`web-client`)
   web-client:
@@ -53,12 +55,26 @@ jobs:
           cd ./web-client
           yarn install  
 
-      - name: Build the Docker image for web-client
-        run: |
+      - name: Run Linter (Frontend)
           cd ./web-client
-          docker build -t web-client . 
+          yarn lint
+
 
       - name: Run Unit Tests (Vitest)
         run: |
           cd ./web-client
           yarn test
+
+      -name: Run E2E tests (Frontend)
+        run: |
+          cd ./web-client
+          yarn e2e
+
+      - name: Check Code Formatting
+          cd ./web-client
+          yarn format:check
+
+      - name: Build the Docker image for web-client
+        run: |
+          cd ./web-client
+          docker build -t web-client . 
