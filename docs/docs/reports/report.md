@@ -44,11 +44,12 @@ Pour contribuer au projet, un nouveau développeur peut suivre ces étapes :
 1. **Cloner le projet** : Utiliser `git clone <url-du-dépôt>` pour récupérer le projet localement.
 2. **Créer une branche** : Créer une nouvelle branche à partir de `main` pour travailler sur une nouvelle fonctionnalité ou correction de bug. 
 
-```bash
+```
 git checkout -b feature/nom-de-la-fonctionnalité
 git add path to file(s)
 gitmoji -c  # Choisir l'emoji, le titre du commit et le message dans le commit
 git push origin feature/nom-de-la-fonctionnalité
+```
 # Créer une pull request et merger avec la branche main
 
 ### Schéma d’ajout d’une nouvelle fonctionnalité :
