@@ -110,3 +110,4 @@ jobs:
         run: |
           docker tag web-client etienne123/web-client:latest
           docker push etienne123/web-client:latest
+
