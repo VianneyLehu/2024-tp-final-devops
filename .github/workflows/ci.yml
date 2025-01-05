@@ -19,48 +19,46 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: '1.23'  
+          go-version: '1.23'
 
-<<<<<<< HEAD
-      - name: Build GO
+      - name: Build (GO)
         run: |
           cd ./vote-api
           go build
 
-        - name: Run Unit Tests (Go)
-        run: |
-          cd ./vote-api
-          go test ./...  # Exécuter les tests unitaires pour le backend
-=======
-      - name: Build (GO)
-        run: |
-          cd ./vote-api
-          go build 
-
       - name: Run Linter (golangci-lint)
         run: |
-          cd ./vote-api 
+          cd ./vote-api
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b ./bin v1.63.4
           ./bin/golangci-lint run ./...
-      
+
       - name: Format the Go code (go fmt)
         run: |
           cd ./vote-api
           go fmt ./...
->>>>>>> 8bc8fdc6986729d50f3bdd92904a2db708fd1dc5
+
+      - name: Run Unit Tests (Go)
+        run: |
+          cd ./vote-api
+          go test ./...  # Exécuter les tests unitaires pour le backend
 
       - name: Build the Docker image for vote-api
         run: |
           cd ./vote-api
-          docker build -t vote-api .  
+          docker build -t vote-api .
 
+      # Docker Login for pushing to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-
-      - name: Build the Docker image for vote-api
+      # Push Docker image to Docker Hub
+      - name: Push the Docker image for vote-api
         run: |
-          cd ./vote-api
-          docker build -t vote-api .  
-
+          docker tag vote-api etienne123/vote-api:latest
+          docker push etienne123/vote-api:latest
 
 
   # Job pour le frontend (`web-client`)
@@ -73,25 +71,17 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '23'  
+          node-version: '23'
 
       - name: Install Dependencies (Frontend)
         run: |
           cd ./web-client
-          yarn install 
+          yarn install
 
-<<<<<<< HEAD
-      - name: Run Linter (Frontend)
-          cd ./web-client
-          yarn lint
-
-=======
       - name: Run Unit Tests (Vitest)
         run: |
           cd ./web-client
           yarn test
->>>>>>> 8bc8fdc6986729d50f3bdd92904a2db708fd1dc5
-
 
       - name: Run Linter
         run: |
@@ -103,38 +93,20 @@ jobs:
           cd ./web-client
           yarn format:check
 
-
       - name: Build the Docker image for web-client
         run: |
           cd ./web-client
-<<<<<<< HEAD
-          yarn test
+          docker build -t web-client .
 
-      -name: Run E2E tests (Frontend)
+      # Docker Login for pushing to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Push Docker image to Docker Hub
+      - name: Push the Docker image for web-client
         run: |
-          cd ./web-client
-          yarn e2e
-
-      - name: Check Code Formatting
-          cd ./web-client
-          yarn format:check
-
-      - name: Build the Docker image for web-client
-        run: |
-          cd ./web-client
-          docker build -t web-client . 
-=======
-          docker build -t web-client . 
-
-
->>>>>>> 8bc8fdc6986729d50f3bdd92904a2db708fd1dc5
-
-
-
-
-
-
-<<<<<<< HEAD
-          
-=======
->>>>>>> 8bc8fdc6986729d50f3bdd92904a2db708fd1dc5
+          docker tag web-client etienne123/web-client:latest
+          docker push etienne123/web-client:latest
