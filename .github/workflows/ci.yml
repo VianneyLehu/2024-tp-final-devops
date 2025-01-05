@@ -19,19 +19,19 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: '1.23'  
+          go-version: '1.23'
 
       - name: Build (GO)
         run: |
           cd ./vote-api
-          go build 
+          go build
 
       - name: Run Linter (golangci-lint)
         run: |
-          cd ./vote-api 
+          cd ./vote-api
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b ./bin v1.63.4
           ./bin/golangci-lint run ./...
-      
+
       - name: Format the Go code (go fmt)
         run: |
           cd ./vote-api
@@ -45,8 +45,20 @@ jobs:
       - name: Build the Docker image for vote-api
         run: |
           cd ./vote-api
-          docker build -t vote-api .  
+          docker build -t vote-api .
 
+      # Docker Login for pushing to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Push Docker image to Docker Hub
+      - name: Push the Docker image for vote-api
+        run: |
+          docker tag vote-api etienneb123/vote-api:latest
+          docker push etienneb123/vote-api:latest
 
 
   # Job pour le frontend (`web-client`)
@@ -59,18 +71,17 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '23'  
+          node-version: '23'
 
       - name: Install Dependencies (Frontend)
         run: |
           cd ./web-client
-          yarn install 
+          yarn install
 
       - name: Run Unit Tests (Vitest)
         run: |
           cd ./web-client
           yarn test
-
 
       - name: Run Linter
         run: |
@@ -82,16 +93,21 @@ jobs:
           cd ./web-client
           yarn format:check
 
-
       - name: Build the Docker image for web-client
         run: |
           cd ./web-client
-          docker build -t web-client . 
+          docker build -t web-client .
 
+      # Docker Login for pushing to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-
-
-
-
-
+      # Push Docker image to Docker Hub
+      - name: Push the Docker image for web-client
+        run: |
+          docker tag web-client etienneb123/web-client:latest
+          docker push etienneb123/web-client:latest
 
