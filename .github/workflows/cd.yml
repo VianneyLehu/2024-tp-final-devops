@@ -1,0 +1,31 @@
+name: Déploiement sur Render
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Déployer le backend sur Render via l'API
+        run: |
+          curl --request POST \
+            --url https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID_BACKEND }}/deploys \
+            --header 'accept: application/json' \
+            --header 'content-type: application/json' \
+            --header "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            --data '{"clear_cache": false}'
+
+  deploy_frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Déployer le frontend sur Render via l'API
+        run: |
+          curl --request POST \
+            --url https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID_FRONTEND }}/deploys \
+            --header 'accept: application/json' \
+            --header 'content-type: application/json' \
+            --header "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            --data '{"clear_cache": false}'
