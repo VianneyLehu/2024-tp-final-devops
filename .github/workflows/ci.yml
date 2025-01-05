@@ -57,8 +57,8 @@ jobs:
       # Push Docker image to Docker Hub
       - name: Push the Docker image for vote-api
         run: |
-          docker tag vote-api etienne123/vote-api:latest
-          docker push etienne123/vote-api:latest
+          docker tag vote-api etienne123b/vote-api:latest
+          docker push etienne123b/vote-api:latest
 
 
   # Job pour le frontend (`web-client`)
@@ -108,6 +108,6 @@ jobs:
       # Push Docker image to Docker Hub
       - name: Push the Docker image for web-client
         run: |
-          docker tag web-client etienne123/web-client:latest
-          docker push etienne123/web-client:latest
+          docker tag web-client etienneb123/web-client:latest
+          docker push etienneb123/web-client:latest
 
