@@ -22,3 +22,10 @@ jobs:
       - name: Déployer le frontend sur Render via l'API
         run: |
           curl ${{ secrets.RENDER_SERVICE_ID_FRONTEND }}
+
+  deploy_docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Déployer la doc  sur Render via l'API
+        run: |
+          curl ${{ secrets.RENDER_SERVICE_ID_DOCS }}
