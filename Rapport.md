@@ -1,89 +1,66 @@
-
-# Rapport de gestion du projet
+# Rapport de Projet DevOps
 
 ## Introduction
 
-Ce projet a été développé en utilisant la méthodologie **Trunk-Based Development (TBD)**, où le travail est effectué sur une seule branche principale, **`main`**, afin de permettre des intégrations fréquentes et un flux de développement rapide. L'objectif principal était de maintenir une **intégration continue** (CI), d'assurer la qualité du code avec des tests automatisés et d'assurer une cohésion entre les différentes parties de l'application (frontend et backend).
+Ce projet a pour objectif de mettre en place une infrastructure DevOps complète en utilisant Docker, GitHub Actions pour l'intégration et le déploiement continu (CI/CD), et Render pour le déploiement des applications. Nous avons adopté la méthode **Trunk-Based Development**, où chaque modification est effectuée sur des branches dédiées et fusionnée dès que possible pour garantir une intégration continue rapide.
 
-### Contexte du Projet
-Le projet consiste en deux parties principales :
-1. **`vote-api`** : Le backend, qui fournit une API permettant de voter pour des films.
-2. **`web-client`** : Le frontend, une application web permettant aux utilisateurs de voir les films et de voter pour leurs préférés via une interface utilisateur.
+## Ce que nous avons fait
 
-Le but était de garantir un flux de développement fluide, d'assurer une qualité continue du code, et de rendre les versions testables au fur et à mesure de leur développement.
+1. **Dockerfiles** : 
+   - **Dockerfile web-client** : Le Dockerfile contient un multi-stage build pour obtenir l’image la plus petite possible à la fin. On copie ensuite le résultat du build dans notre image finale et on met l’utilisateur en `appuser`.
+   - **Dockerfile vote-api** : Le Dockerfile contient un multi-stage build pour obtenir l’image la plus petite possible à la fin. On copie ensuite le résultat du build dans notre image finale et on met l’utilisateur en `appuser`.
+   - **Dockerfile docs** : Le Dockerfile contient aussi un multi-stage build pour obtenir l’image la plus petite possible à la fin. On copie ensuite le résultat du build. Pour celui-ci, on laisse l’utilisateur en `root` dû à des problèmes techniques rencontrés.
 
-## Objectifs du Projet
+2. **Docker Compose** : 
+   Nous avons créé un fichier `docker-compose.yml` pour pouvoir lancer le frontend et le backend dans un réseau virtuel permettant la connexion entre eux. On y met les variables d'environnement nécessaires pour les containers, comme la base de données ou le lien vers `vote_api`.
 
-1. **Maintenir une base de code stable et évolutive**.
-2. **Automatiser les tests et le contrôle qualité** à chaque modification de code.
-3. **Faciliter la collaboration au sein de l'équipe** en limitant les conflits de fusion grâce à un développement basé sur le tronc.
-4. **Assurer la validation des fonctionnalités** avec des tests unitaires et des tests de bout en bout (E2E).
+3. **CI/CD avec GitHub Actions** : 
+   Nous avons mis en place de l'intégration continue (CI) pour automatiser les tests, le build et le formatage de chaque application. Cela permet aussi de construire les images Docker et de les pousser sur Docker Hub. La CD ensuite permet de redéployer les applications sur Render avec la dernière version de l’image et du code sur `main`.
 
-## Méthodologie
+4. **Déploiement sur Render** : 
+   Les services et les images Docker ont été déployés sur Render pour une gestion simplifiée.
 
-### **Trunk-Based Development**
+5. **Database sur Neon** : 
+   Notre base de données est sur Neon.
 
-Nous avons utilisé l'approche **Trunk-Based Development (TBD)**, où tout le travail de développement est effectué dans une **seule branche** (`main`). Cette approche nous a permis de garantir une **intégration continue rapide** et de limiter les conflits de fusion, en gardant tous les développeurs concentrés sur une base de code principale.
+## Déploiement
 
-### **Branches de fonctionnalité temporaires**
+Pour le déploiement, nous avons décidé de déployer le frontend, le backend et la documentation sur Render. Cela permet de centraliser les services.
 
-Bien que nous utilisions principalement la branche **`main`** pour le développement, des **branches de fonctionnalité temporaires** étaient créées pour les nouvelles fonctionnalités. Celles-ci étaient régulièrement fusionnées dans la branche **`main`** après avoir passé les tests et revues de code.
+### Liens des images et des apps :
 
-### **Processus de revue de code**
+- **web-client app** : [https://web-client-latest.onrender.com](https://web-client-latest.onrender.com)
+- **vote-api app** : [https://vote-api-latest.onrender.com](https://vote-api-latest.onrender.com)
+- **docs app** : [https://docs-latest.onrender.com](https://docs-latest.onrender.com)
 
-Chaque modification apportée à la branche **`main`** passait par une **pull request (PR)** afin d'être examinée et validée par d'autres membres de l'équipe. Cela permet de s'assurer que les changements apportés respectent les bonnes pratiques de codage et n'introduisent pas de régressions.
+- **web-client image** : [https://hub.docker.com/repository/docker/etienneb123/web-client/general](https://hub.docker.com/repository/docker/etienneb123/web-client/general)
+- **vote-api image** : [https://hub.docker.com/repository/docker/etienneb123/vote-api/general](https://hub.docker.com/repository/docker/etienneb123/vote-api/general)
+- **docs image** : [https://hub.docker.com/repository/docker/etienneb123/docs/general](https://hub.docker.com/repository/docker/etienneb123/docs/general)
 
-## Processus d'intégration continue (CI)
+## Contribuer au projet
 
-### 1. **Mise en place des tests unitaires**
+Pour contribuer au projet, un nouveau développeur peut suivre ces étapes :
 
-Des tests unitaires ont été mis en place pour **le backend** et **le frontend**.
+1. **Cloner le projet** : Utiliser `git clone <url-du-dépôt>` pour récupérer le projet localement.
+2. **Créer une branche** : Créer une nouvelle branche à partir de `main` pour travailler sur une nouvelle fonctionnalité ou correction de bug. 
 
-#### **Backend (`vote-api`)**
-- **Tests unitaires Go** : Nous avons utilisé le framework **Go testing** pour vérifier que les fonctions backend (comme la gestion des votes) fonctionnaient correctement.
-- **Commandes utilisées** :
-  - `go test ./...` : Exécution des tests unitaires pour valider que le backend répond aux attentes de l'équipe.
+```bash
+git checkout -b feature/nom-de-la-fonctionnalité
+git add path to file(s)
+gitmoji -c  # Choisir l'emoji, le titre du commit et le message dans le commit
+git push origin feature/nom-de-la-fonctionnalité
+# Créer une pull request et merger avec la branche main
 
-#### **Frontend (`web-client`)**
-- **Tests unitaires avec Vitest** : Le frontend utilise **Vitest** pour exécuter des tests unitaires en JavaScript/TypeScript. Ces tests sont utilisés pour vérifier que les composants de l'application frontend fonctionnent comme prévu.
-- **Commandes utilisées** :
-  - `yarn test` : Exécution des tests unitaires pour s'assurer que les fonctionnalités frontend ne sont pas cassées.
+### Schéma d’ajout d’une nouvelle fonctionnalité :
 
-### 2. **Linter et Contrôle de la qualité du code**
+![schema](diagram.webp)
 
-Afin de garantir la qualité du code et éviter l'introduction d'erreurs liées au style, nous avons mis en place des outils de **linter** pour les deux parties du projet :
+## Problème
 
-- **Backend (`vote-api`)** : Nous avons utilisé **golangci-lint** pour vérifier la qualité du code Go et détecter les erreurs potentielles.
-  - **Commandes utilisées** :
-    - `golangci-lint run` : Exécution du linter pour valider le style et la qualité du code Go.
-  
-- **Frontend (`web-client`)** : Nous avons utilisé **ESLint** pour vérifier les erreurs de style et les mauvaises pratiques dans le code JavaScript/TypeScript.
-  - **Commandes utilisées** :
-    - `yarn lint` : Exécution du linter pour s'assurer que le frontend respecte les règles de style définies.
+**Dockerfile Docs** : Le Dockerfile pour les docs est tout le temps en mode root. Nous avions des problèmes lors de l'exécution du container, l’utilisateur `appuser` ne pouvait pas accéder à certains fichiers.
 
-### 3. **Tests E2E (End-to-End)**
+## Amélioration
 
-Pour tester l'intégration complète de l'application (frontend et backend), nous avons mis en place des tests **E2E** :
-
-- **Frontend (`web-client`)** : Les tests E2E sont utilisés pour vérifier le bon fonctionnement de l'application du point de vue de l'utilisateur. Nous avons utilisé un framework comme **Cypress** ou un outil similaire pour vérifier que les interactions de l'utilisateur avec l'interface se déroulent correctement.
-  - **Commandes utilisées** :
-    - `yarn e2e` : Exécution des tests E2E pour valider l'intégration du frontend.
-
-- **Backend (`vote-api`)** : Nous avons écrit des tests d'intégration ou des tests E2E pour vérifier que le backend répond comme prévu aux différentes demandes (par exemple, récupérer les votes d'un film).
-  - **Commandes utilisées** :
-    - `go run e2e-tests.go` : Exécution des tests d'intégration pour valider que l'API backend fonctionne correctement avec l'interface.
-
-### 4. **Automatisation du build**
-
-Le processus de **build** a été automatisé pour garantir que les deux parties du projet se construisent correctement à chaque commit.
-
-- **Backend (`vote-api`)** : Nous avons utilisé la commande `go build` pour compiler le backend et générer un binaire de production.
-- **Frontend (`web-client`)** : Nous avons utilisé **Yarn** pour construire l'application frontend en mode production avec `yarn build`.
-
-### 5. **GitHub Actions**
-
-Nous avons utilisé **GitHub Actions** pour automatiser tout le pipeline CI. À chaque **push** ou **pull request**, les actions suivantes sont exécutées :
-- **Linter** : Vérification de la qualité du code.
-- **Tests unitaires** : Exécution des tests unitaires pour le backend et le frontend.
-- **Tests E2E** : Vérification de l'intégration complète de l'application.
-- **Build** : Construction des applications frontend et backend pour s'assurer qu'elles peuvent être déployées correctement.
+- Correctement gérer les autorisations sur l’image Docker pour la documentation.
+- Modifier la CD pour qu’elle s'exécute uniquement lors d’un push sur la branche `main`.
+- Faire en sorte que la CI s'exécute toujours avant la CD pour éviter tout conflit.
